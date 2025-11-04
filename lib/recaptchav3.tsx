@@ -31,16 +31,13 @@ async function grecaptchaIsReady(): Promise<Grecaptcha> {
 export async function generateRecaptchaToken(sitekey: string, action: string): Promise<string> {
   const grecaptcha = await grecaptchaIsReady();
 
-  return await (new Promise((resolve, reject) => {
-    grecaptcha.ready(async () => {
-      try {
-        const token = await grecaptcha.execute(sitekey, {action});
-        resolve(token);
-      } catch(e) {
-        reject(e);
-      }
+  return new Promise((resolve, reject) => {
+    grecaptcha.ready(() => {
+      grecaptcha.execute(sitekey, {action})
+        .then(token => resolve(token))
+        .catch(err => reject(err));
     });
-  }));
+  });
 }
 
 export function ReCaptchaScript({sitekey}: {sitekey: string}) {
