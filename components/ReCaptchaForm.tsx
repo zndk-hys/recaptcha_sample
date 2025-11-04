@@ -43,7 +43,7 @@ export default function ReCaptchaForm() {
       }
 
     } catch (e) {
-      setResultMessage(`送信エラー`);
+      setResultMessage(`トークン生成エラー`);
       console.error(e);
     }
   }

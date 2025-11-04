@@ -33,9 +33,11 @@ export async function generateRecaptchaToken(sitekey: string, action: string): P
 
   return new Promise((resolve, reject) => {
     grecaptcha.ready(() => {
-      grecaptcha.execute(sitekey, {action})
-        .then(token => resolve(token))
-        .catch(err => reject(err));
+      try {
+        grecaptcha.execute(sitekey, {action}).then(token => resolve(token))
+      } catch(e) {
+        reject(e);
+      }
     });
   });
 }
