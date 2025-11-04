@@ -32,9 +32,10 @@ export async function generateRecaptchaToken(sitekey: string, action: string): P
   const grecaptcha = await grecaptchaIsReady();
 
   return new Promise((resolve, reject) => {
-    grecaptcha.ready(() => {
+    grecaptcha.ready(async () => {
       try {
-        grecaptcha.execute(sitekey, {action}).then(token => resolve(token))
+        const token = await grecaptcha.execute(sitekey, {action});
+        resolve(token);
       } catch(e) {
         reject(e);
       }
