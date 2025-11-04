@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <form id="form">
+    <button type="submit">submit</button>
+  </form>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LfqAwIsAAAAAMM7ubHrSZyFPy7D5ChZ4C49xMmA""></script>
+  <script>
+    function getRecaptchaToken(action) {
+      return new Promise((resolve) => {
+        grecaptcha.ready(async () => {
+          const token = await grecaptcha.execute('6LfqAwIsAAAAAMM7ubHrSZyFPy7D5ChZ4C49xMmA', {action});
+          resolve(token);
+        });
+      });
+    }
+
+    const form = document.querySelector('#form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const token = await getRecaptchaToken('submit');
+      const response = await fetch('/api/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token,
+        }),
+      });
+      const json = await response.json();
+      console.log(json);
+    });
+  </script>
+</body>
+</html>
