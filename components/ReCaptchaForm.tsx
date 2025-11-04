@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ReCaptchaScript, generateRecaptchaToken } from "@/lib/recaptchav3";
+import { ReCaptchaScript, generateRecaptchaToken } from "@/lib/recaptchav3Client";
 
 type FormType = {
   name: string;
