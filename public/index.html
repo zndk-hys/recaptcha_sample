@@ -7,34 +7,61 @@
 </head>
 <body>
   <form id="form">
+    <input type="text">
     <button type="submit">submit</button>
   </form>
   <script src="https://www.google.com/recaptcha/api.js?render=6LfqAwIsAAAAAMM7ubHrSZyFPy7D5ChZ4C49xMmA""></script>
   <script>
-    function getRecaptchaToken(action) {
-      return new Promise((resolve) => {
-        grecaptcha.ready(async () => {
-          const token = await grecaptcha.execute('6LfqAwIsAAAAAMM7ubHrSZyFPy7D5ChZ4C49xMmA', {action});
-          resolve(token);
-        });
-      });
-    }
+    // function getRecaptchaToken(action) {
+    //   return new Promise((resolve) => {
+    //     grecaptcha.ready(async () => {
+    //       const token = await grecaptcha.execute('6LfqAwIsAAAAAMM7ubHrSZyFPy7D5ChZ4C49xMmA', {action});
+    //       resolve(token);
+    //     });
+    //   });
+    // }
 
-    const form = document.querySelector('#form');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const token = await getRecaptchaToken('submit');
-      const response = await fetch('/api/verify', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token,
-        }),
+    // const form = document.querySelector('#form');
+    // form.addEventListener('submit', async (e) => {
+    //   e.preventDefault();
+    //   const token = await getRecaptchaToken('submit');
+    //   const response = await fetch('/api/verify', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       token,
+    //     }),
+    //   });
+    //   const json = await response.json();
+    //   console.log(json);
+    // });
+
+    // Contact Form 7 擬似コード
+    document.addEventListener("DOMContentLoaded", e => {
+      const token = '6LfqAwIsAAAAAMM7ubHrSZyFPy7D5ChZ4C49xMmA';
+
+      const exec = action => {
+        grecaptcha.execute(token, {action}).then(token => {
+          const event = new CustomEvent("wpcf7grecaptchaexecuted", {
+            detail: { action, token }
+          });
+          document.dispatchEvent(event);
+        });
+      }
+
+      grecaptcha.ready(() => {
+        exec({action: 'homepage'});
       });
-      const json = await response.json();
-      console.log(json);
+
+      document.addEventListener('change', () => {
+        exec({action: 'contactform'});
+      });
+
+      document.addEventListener("wpcf7grecaptchaexecuted", e => {
+        console.log(e.detail.token);
+      });
     });
   </script>
 </body>
